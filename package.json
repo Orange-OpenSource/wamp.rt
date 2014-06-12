@@ -1,0 +1,22 @@
+{
+  "name": "wamp.rt",
+  "author": {
+    "name": "David Corvoysier",
+    "email": "david.corvoysier@orange.com"
+  },
+  "description": "Basic WebSocket Application Messaging Protocol (WAMP) router library",
+  "version": "0.0.1",
+  "dependencies": {
+    "ws":"~0.4.31",
+    "when": "~3.2.3",
+    "commander": "~2.0.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "autobahn": "*"
+  },
+  "main": "lib/wamp.rt",
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}
