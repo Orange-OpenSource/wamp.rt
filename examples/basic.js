@@ -18,15 +18,15 @@ program
 
 
 function onRPCRegistered(uri) {
-    console.log('onRPCRegistered RPC registered ' + uri);
+    console.log('onRPCRegistered RPC registered', uri);
 }
 
 function onRPCUnregistered(uri) {
-    console.log('onRPCUnregistered RPC unregistered ' + uri);
+    console.log('onRPCUnregistered RPC unregistered', uri);
 }
 
-function onPublish(topicUri, publicationId) {
-    console.log('onPublish Publish ' + topicUri + ' ' + publicationId);
+function onPublish(topicUri, args) {
+    console.log('onPublish Publish', topicUri, args);
 }
 
 //

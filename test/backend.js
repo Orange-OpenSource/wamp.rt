@@ -34,10 +34,10 @@ connection.onopen = function (session) {
    var currentSubscription = null;
 
     // Define an event handler
-    function onEvent(args, kwargs, details) {
-	console.log("Event received ", args, kwargs, details);
-	if (args[0] > 20) {
-	    session.unsubscribe(subscription).then(function(gone) {
+    function onEvent(publishArgs, kwargs) {
+	console.log("Event received ", publishArgs, kwargs);
+	if (publishArgs[0] > 20) {
+	    session.unsubscribe(currentSubscription).then(function(gone) {
 		console.log("unsubscribe successfull");
 	    }, function(error) {
 		console.log("unsubscribe failed", error);

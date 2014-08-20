@@ -38,7 +38,7 @@ connection.onopen = function (new_session) {
    console.log("Publish event");
    this.interval = setInterval(function() {
 	if ((counter % 2) == 0) {
-	    session.publish('com.myapp.topic1', [ counter ], {}, {
+	    session.publish('com.myapp.topic1', [ counter, "Arg_1", "Arg_2" ], {}, {
 		acknowledge : true
 	    }).then(function(publication) {
 		console.log("published, publication ID is ", publication);
@@ -46,7 +46,7 @@ connection.onopen = function (new_session) {
 		console.log("publication error", error);
 	    });
 	} else {
-	    session.publish('com.myapp.topic1', [ counter ], {}, {
+	    session.publish('com.myapp.topic1', [ counter, "Arg_1", "Arg_2" ], {}, {
 		acknowledge : false
 	    });
 	}
