@@ -24,13 +24,39 @@ connection.onopen = function (new_session) {
          session.log("Call completed in " +
                      (Date.now() - starttime) +
                      " ms: result = " + now);
-         connection.close();
+//         connection.close();
       },
       function (error) {
          console.log("Call failed:", error);
-         connection.close();
+//         connection.close();
       }
    );
+
+   // Start publishing events
+   var counter = 0;
+
+   console.log("Publish event");
+   this.interval = setInterval(function() {
+	if ((counter % 2) == 0) {
+	    session.publish('com.myapp.topic1', [ counter ], {}, {
+		acknowledge : true
+	    }).then(function(publication) {
+		console.log("published, publication ID is ", publication);
+	    }, function(error) {
+		console.log("publication error", error);
+	    });
+	} else {
+	    session.publish('com.myapp.topic1', [ counter ], {}, {
+		acknowledge : false
+	    });
+	}
+
+	counter += 1;
+	if (counter > 10) {
+	    clearInterval(this.interval);
+	}
+
+   }, 1000);
 
    session.call('wamp.rt.foo',["test"]).then(
       function (res) {
