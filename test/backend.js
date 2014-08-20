@@ -33,20 +33,17 @@ connection.onopen = function (session) {
 
    var currentSubscription = null;
 
-   // Define an event handler
-   function onEvent(args, kwargs, details) {
-      console.log("Event received ", args, kwargs, details);
-      if ( args[0] > 20 ) {
-         session.unsubscribe(subscription).then(
-            function(gone) {
-               console.log("unsubscribe successfull");
-            },
-            function(error) {
-               console.log("unsubscribe failed", error);
-            }
-         );
-      }
-   }
+    // Define an event handler
+    function onEvent(args, kwargs, details) {
+	console.log("Event received ", args, kwargs, details);
+	if (args[0] > 20) {
+	    session.unsubscribe(subscription).then(function(gone) {
+		console.log("unsubscribe successfull");
+	    }, function(error) {
+		console.log("unsubscribe failed", error);
+	    });
+	}
+    }
 
    // Subscribe to a topic
    session.subscribe('com.myapp.topic1', onEvent).then(
@@ -60,7 +57,7 @@ connection.onopen = function (session) {
    );
 
    setTimeout(function() {console.log("Unregistration");session.unregister(reg);},20000);
-   setTimeout(function() {console.log("Unsubscription");session.unsubscribe(currentSubscription);},20000);
+
 };
 
 connection.open();
