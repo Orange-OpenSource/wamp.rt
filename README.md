@@ -1,5 +1,5 @@
 # wamp.rt: A WAMP V2 nodejs router
-##Copyright Orange 2014, All Rigths Reserved
+##Copyright Orange 2014, All Rights Reserved
 
 wamp.rt is a WebSocket Application Messaging Protocol [WAMP](http://wamp.ws/) V2 router implementation based on nodejs.
 
