@@ -1,20 +1,21 @@
 //
 // This is a basic router example
 // 
-// This script runs a simple WAMP server on port 9000 that exposes
-// only one function, "test:isEven". It returns `true` if the first
-// parameter is even, `false` otherwise.
+// This script runs a simple WAMP router on port 9000 
+// It illustrates:
+// - how to filter out incoming connections,
+// - how to declare a router-embedded RPC,
+// - how to subscribe to router events.
 //
 
-//var WebSocketServer = require('ws').Server,
 WAMPRT_TRACE = true;
+
 var Router = require('../lib/wamp.rt');
 var program = require('commander');
 
 
 program 
-    .option('-p, --port <port>', 'Server IP port', parseInt,9000)
-    .option('-i, --ip <ip>', 'Server IP address','127.0.0.1');
+    .option('-p, --port <port>', 'Server IP port', parseInt,9000);
 
 
 function onRPCRegistered(uri) {
@@ -53,4 +54,3 @@ app.regrpc('wamp.rt.foo', function(id,args) {
     console.log('called with ' + args);
     app.resrpc(id,['bar']);
 });
-
