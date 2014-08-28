@@ -1,7 +1,7 @@
 //
 // This is a basic router example
-// 
-// This script runs a simple WAMP router on port 9000 
+//
+// This script runs a simple WAMP router on port 9000
 // It illustrates:
 // - how to filter out incoming connections,
 // - how to declare a router-embedded RPC,
@@ -14,7 +14,7 @@ var Router = require('../lib/wamp.rt');
 var program = require('commander');
 
 
-program 
+program
     .option('-p, --port <port>', 'Server IP port', parseInt,9000);
 
 
@@ -52,5 +52,5 @@ app.on('Publish', onPublish);
 
 app.regrpc('wamp.rt.foo', function(id,args) {
     console.log('called with ' + args);
-    app.resrpc(id,['bar']);
+    app.resrpc(id,["bar", "bar2"], {"key1": "bar1", "key2": "bar2"});
 });
