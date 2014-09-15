@@ -1,6 +1,6 @@
 {
   "name": "wamp.rt",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Basic WebSocket Application Messaging Protocol (WAMP) V2 router library",
   "author": {
     "name": "David Corvoysier",
