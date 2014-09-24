@@ -4,7 +4,8 @@ var program = require('commander');
 
 program
     .option('-p, --port <port>', 'Server IP port', parseInt,9000)
-    .option('-i, --ip <ip>', 'Server IP address','127.0.0.1');
+    .option('-i, --ip <ip>', 'Server IP address','127.0.0.1')
+    .parse(process.argv);
 
 var connection = new autobahn.Connection({
    url: 'ws://' + program.ip + ':' + program.port,

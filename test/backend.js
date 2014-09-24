@@ -4,7 +4,8 @@ var program = require('commander');
 
 program
     .option('-p, --port <port>', 'Server IP port', parseInt,9000)
-    .option('-i, --ip <ip>', 'Server IP address','127.0.0.1');
+    .option('-i, --ip <ip>', 'Server IP address','127.0.0.1')
+    .parse(process.argv);
 
 var connection = new autobahn.Connection({
    url: 'ws://' + program.ip + ':' + program.port,
@@ -35,7 +36,7 @@ connection.onopen = function (session) {
    function echo(args,kwargs) {
      console.log("args",args,"kwargs",kwargs);
      return new autobahn.Result(args, kwargs);
-   };
+   }
 
    session.register('com.echoservice.echo', echo).then(
       function (registration) {
