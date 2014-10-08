@@ -18,7 +18,8 @@
     "commander": "~2.0.0"
   },
   "devDependencies": {
-    "autobahn": "*"
+    "autobahn": "*",
+    "when": "*"
   },
   "main": "lib/wamp.rt",
   "engines": {
