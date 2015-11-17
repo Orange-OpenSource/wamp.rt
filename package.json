@@ -14,8 +14,8 @@
     "url": "https://github.com/Orange-OpenSource/wamp.rt.git"
   },
   "dependencies": {
-    "ws": "~0.4.31",
-    "commander": "~2.0.0"
+    "ws": "0.8.0",
+    "commander": "2.1.0"
   },
   "devDependencies": {
     "autobahn": "*",
