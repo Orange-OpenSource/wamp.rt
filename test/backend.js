@@ -3,13 +3,16 @@ var autobahn = require('autobahn');
 var program = require('commander');
 
 program
-    .option('-p, --port <port>', 'Server IP port', parseInt,9000)
+    .option('-p, --port <port>', 'Server IP port', 9000)
     .option('-i, --ip <ip>', 'Server IP address','127.0.0.1')
     .parse(process.argv);
 
+var connectUrl = 'ws://' + program.ip + ':' + program.port;
+console.log('connectUrl:', connectUrl);
+
 var connection = new autobahn.Connection({
-   url: 'ws://' + program.ip + ':' + program.port,
-   realm: 'realm1'}
+    url: connectUrl,
+    realm: 'realm1'}
 );
 
 connection.onopen = function (session) {
@@ -53,7 +56,7 @@ connection.onopen = function (session) {
 
     // Define an event handler
    function onEvent(publishArgs, kwargs) {
-      console.log('Event received args', publishArgs, 'kwargs ',kwargs);
+      console.log('Event', currentSubscription.topic,'received args', publishArgs, 'kwargs ',kwargs);
       counter++;
       if (counter > 20) {
          session.unsubscribe(currentSubscription).then(function(gone) {
@@ -61,7 +64,7 @@ connection.onopen = function (session) {
          }, function(error) {
             console.log("unsubscribe failed", error);
          });
-	    }
+      }
    }
 
    // Subscribe to a topic

@@ -15,8 +15,10 @@ var program = require('commander');
 
 
 program
-    .option('-p, --port <port>', 'Server IP port', parseInt,9000);
+    .option('-p, --port <port>', 'Server IP port', 9000)
+    .parse(process.argv);
 
+console.log('Listening port:', program.port);
 
 function onRPCRegistered(uri) {
     console.log('onRPCRegistered RPC registered', uri);
