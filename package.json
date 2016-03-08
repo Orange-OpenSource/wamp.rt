@@ -19,7 +19,10 @@
   },
   "devDependencies": {
     "autobahn": "*",
-    "when": "*"
+    "when": "*",
+    "chai": "*",
+    "chai-as-promised": "*",
+    "chai-spies": "*"
   },
   "main": "lib/wamp.rt",
   "engines": {

@@ -10,9 +10,8 @@
 
 WAMPRT_TRACE = true;
 
-var Router = require('../lib/wamp.rt');
+var WampRouter = require('../lib/wamp.rt');
 var program = require('commander');
-
 
 program
     .option('-p, --port <port>', 'Server IP port', 9000)
@@ -20,22 +19,10 @@ program
 
 console.log('Listening port:', program.port);
 
-function onRPCRegistered(uri) {
-    console.log('onRPCRegistered RPC registered', uri);
-}
-
-function onRPCUnregistered(uri) {
-    console.log('onRPCUnregistered RPC unregistered', uri);
-}
-
-function onPublish(topicUri, args) {
-    console.log('onPublish Publish', topicUri, args);
-}
-
 //
 // WebSocket server
 //
-var app = new Router(
+var app = new WampRouter(
     { port: program.port,
       // The router will select the appropriate protocol,
       // but we can still deny the connection
@@ -48,11 +35,8 @@ var app = new Router(
     }
 );
 
-app.on('RPCRegistered', onRPCRegistered);
-app.on('RPCUnregistered', onRPCUnregistered);
-app.on('Publish', onPublish);
-
-app.regrpc('wamp.rt.foo', function(id,args) {
+var realm = app.getRealm('realm1');
+realm.regrpc('wamp.rt.foo', function(id,args) {
     console.log('called with ' + args);
-    app.resrpc(id,["bar", "bar2"], {"key1": "bar1", "key2": "bar2"});
+    realm.resrpc(id,["bar", "bar2"], {"key1": "bar1", "key2": "bar2"});
 });
