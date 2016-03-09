@@ -151,13 +151,13 @@ describe('protocol', function() {
   it('PUBLISH to remote', function () {
     cli.initRealm('test');
     var realm = cli.getRealm('test');
-    var publicationId = null;
+    var subscriptionId = null;
 
     sender.send = chai.spy(
       function (msg, id, callback) {
         expect(msg[0]).to.equal(WAMP.SUBSCRIBED);
         expect(msg[1]).to.equal(1234);
-        publicationId = msg[2];
+        subscriptionId = msg[2];
       }
     );
     cli.handle([WAMP.SUBSCRIBE, 1234, {}, 'topic1']);
@@ -166,14 +166,14 @@ describe('protocol', function() {
     sender.send = chai.spy(
       function (msg, id, callback) {
         expect(msg[0]).to.equal(WAMP.EVENT);
-        expect(msg[1]).to.equal(publicationId);
-        expect(msg[2]).to.equal(2345);
+        expect(msg[1]).to.equal(subscriptionId);
+        // 2 published message Id
         // 3 options?
         expect(msg[4]).to.deep.equal(['arg.1','arg.2']);
         expect(msg[5]).to.deep.equal({foo:'bar'});
       }
     );
-    realm.publish('topic1', 2345, ['arg.1','arg.2'], {foo:'bar'});
+    realm.publish('topic1', ['arg.1','arg.2'], {foo:'bar'});
     expect(sender.send, 'publication received').to.have.been.called.once;
   });
 
