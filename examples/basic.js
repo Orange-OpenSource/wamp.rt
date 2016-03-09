@@ -36,7 +36,7 @@ var app = new WampRouter(
 );
 
 var realm = app.getRealm('realm1');
-realm.regrpc('wamp.rt.foo', function(id,args) {
-    console.log('called with ' + args);
-    realm.resrpc(id, undefined /* no error */, [["bar", "bar2"], {"key1": "bar1", "key2": "bar2"}]);
+realm.regrpc('wamp.rt.foo', function(id, args, kwargs) {
+    console.log('called with ', args, kwargs);
+    realm.resrpc(id, null /* no error */, [["bar", "bar2"], {"key1": "bar1", "key2": "bar2"}]);
 });

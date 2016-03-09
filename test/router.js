@@ -140,7 +140,7 @@ describe('protocol', function() {
 //      console.log('call result', id, args, kwargs);
       expect(args).to.deep.equal([['result.1','result.2'],{foo:'bar'}]);
     });
-    realm.callrpc('func1', [['arg.1','arg.2'], {kVal:'kRes'}], callSpy);
+    realm.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callSpy);
     expect(sender.send, 'invocation received').to.have.been.called.once;
 
     cli.handle([WAMP.YIELD, callId, {}, ['result.1','result.2'], {foo:'bar'}]);

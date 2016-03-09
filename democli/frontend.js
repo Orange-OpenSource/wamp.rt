@@ -93,7 +93,7 @@ connection.onopen = function (new_session) {
       }
    );
 
-   session.call('wamp.rt.foo',["test"]).then(
+   session.call('wamp.rt.foo', ["test"], {foo:'bar'}).then(
       function (res) {
          session.log("Call wamp.rt.foo completed in " +
             (Date.now() - starttime) +
@@ -130,4 +130,3 @@ connection.onclose = function (reason, details) {
 };
 
 connection.open();
-
