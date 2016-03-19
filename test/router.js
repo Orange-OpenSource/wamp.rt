@@ -133,8 +133,7 @@ describe('protocol', function() {
 
   it('UNREGISTER error', function () {
     cli.initRealm('test');
-    var realm = cli.getRealm('test');
-
+  
     sender.send = chai.spy(
       function (msg, id, callback) {
         expect(msg[0]).to.equal(WAMP.ERROR);
