@@ -117,6 +117,23 @@ describe('protocol', function() {
     expect(sender.send).to.have.been.called.once;
   });
 
+  it('UNREGISTER error', function () {
+    cli.initRealm('test');
+    var realm = cli.getRealm('test');
+
+    sender.send = chai.spy(
+      function (msg, id, callback) {
+        expect(msg[0]).to.equal(WAMP.ERROR);
+        expect(msg[1]).to.equal(WAMP.UNREGISTER);
+        expect(msg[2]).to.equal(2345);
+        // 3 options
+        expect(msg[4]).to.equal('wamp.error.no_such_registration');
+      }
+    );
+    cli.handle([WAMP.UNREGISTER, 2345, 1234567890]);
+    expect(sender.send, 'unregistration confirmed').to.have.been.called.once;
+  });
+
   it('UNREGISTER', function () {
     cli.initRealm('test');
     var realm = cli.getRealm('test');
@@ -180,9 +197,24 @@ describe('protocol', function() {
     expect(callSpy, 'result delivered').to.have.been.called.once;
   });
 
+  it('UNSUBSCRIBE error', function () {
+    cli.initRealm('test');
+
+    sender.send = chai.spy(
+      function (msg, id, callback) {
+        expect(msg[0]).to.equal(WAMP.ERROR);
+        expect(msg[1]).to.equal(WAMP.UNSUBSCRIBE);
+        expect(msg[2]).to.equal(2345);
+        // 3 options
+        expect(msg[4]).to.equal('wamp.error.no_such_subscription');
+      }
+    );
+    cli.handle([WAMP.UNSUBSCRIBE, 2345, 1234567890]);
+    expect(sender.send, 'unsubscription confirmed').to.have.been.called.once;
+  });
+
   it('UNSUBSCRIBE', function () {
     cli.initRealm('test');
-    var realm = cli.getRealm('test');
     var subscriptionId = null;
 
     sender.send = chai.spy(
