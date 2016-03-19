@@ -117,6 +117,31 @@ describe('protocol', function() {
     expect(sender.send).to.have.been.called.once;
   });
 
+  it('UNREGISTER', function () {
+    cli.initRealm('test');
+    var realm = cli.getRealm('test');
+    var registrationId = null;
+
+    sender.send = chai.spy(
+      function (msg, id, callback) {
+        expect(msg[0]).to.equal(WAMP.REGISTERED);
+        expect(msg[1]).to.equal(1234);
+        registrationId = msg[2];
+      }
+    );
+    cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
+    expect(sender.send, 'registration confirmed').to.have.been.called.once;
+
+    sender.send = chai.spy(
+      function (msg, id, callback) {
+        expect(msg[0]).to.equal(WAMP.UNREGISTERED);
+        expect(msg[1]).to.equal(2345);
+      }
+    );
+    cli.handle([WAMP.UNREGISTER, 2345, registrationId]);
+    expect(sender.send, 'unregistration confirmed').to.have.been.called.once;
+  });
+
   it('CALL to remote', function () {
     cli.initRealm('test');
     var realm = cli.getRealm('test');
@@ -153,6 +178,31 @@ describe('protocol', function() {
     cli.handle([WAMP.YIELD, callId, {}, ['result.1','result.2'], {foo:'bar'}]);
 
     expect(callSpy, 'result delivered').to.have.been.called.once;
+  });
+
+  it('UNSUBSCRIBE', function () {
+    cli.initRealm('test');
+    var realm = cli.getRealm('test');
+    var subscriptionId = null;
+
+    sender.send = chai.spy(
+      function (msg, id, callback) {
+        expect(msg[0]).to.equal(WAMP.SUBSCRIBED);
+        expect(msg[1]).to.equal(1234);
+        subscriptionId = msg[2];
+      }
+    );
+    cli.handle([WAMP.SUBSCRIBE, 1234, {}, 'topic1']);
+    expect(sender.send, 'subscription confirmed').to.have.been.called.once;
+
+    sender.send = chai.spy(
+      function (msg, id, callback) {
+        expect(msg[0]).to.equal(WAMP.UNSUBSCRIBED);
+        expect(msg[1]).to.equal(2345);
+      }
+    );
+    cli.handle([WAMP.UNSUBSCRIBE, 2345, subscriptionId]);
+    expect(sender.send, 'unsubscription confirmed').to.have.been.called.once;
   });
 
   it('PUBLISH to remote', function () {
