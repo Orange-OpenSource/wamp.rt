@@ -208,6 +208,29 @@ describe('protocol', function() {
     expect(callSpy, 'result delivered').to.have.been.called.once;
   });
 
+  it('CALL to remote error', function () {
+    cli.initRealm('test');
+    var realm = cli.getRealm('test');
+
+    sender.send = function () {};
+    cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
+
+    var callId = null;
+    sender.send = chai.spy(
+      function (msg, id, callback) {
+        callId = msg[1];
+      }
+    );
+    var callSpy = chai.spy(function(id, args, kwargs) {
+      expect(args).to.deep.equal(['err.detail.1','err.detail.2']);
+    });
+    realm.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callSpy);
+    expect(sender.send, 'invocation received').to.have.been.called.once;
+
+    cli.handle([WAMP.ERROR, WAMP.INVOCATION, callId, {}, 'wamp.error.runtime_error', ['err.detail.1','err.detail.2']]);
+    expect(callSpy, 'error delivered').to.have.been.called.once;
+  });
+
   it('UNSUBSCRIBE error', function () {
     cli.initRealm('test');
 
