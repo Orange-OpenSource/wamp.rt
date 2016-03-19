@@ -133,7 +133,7 @@ describe('protocol', function() {
 
   it('UNREGISTER error', function () {
     cli.initRealm('test');
-  
+
     sender.send = chai.spy(
       function (msg, id, callback) {
         expect(msg[0]).to.equal(WAMP.ERROR);
@@ -197,7 +197,8 @@ describe('protocol', function() {
         expect(msg[5]).to.deep.equal({kVal:'kRes'});
       }
     );
-    var callSpy = chai.spy(function(id, args, kwargs) {
+    var callSpy = chai.spy(function(err, args) {
+      expect(err).to.equal(null);
       expect(args).to.deep.equal([['result.1','result.2'],{foo:'bar'}]);
     });
     api.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callSpy);
@@ -210,7 +211,7 @@ describe('protocol', function() {
 
   it('CALL to remote error', function () {
     cli.initRealm('test');
-    var realm = cli.getRealm('test');
+    var api = cli.realm.api();
 
     sender.send = function () {};
     cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
@@ -221,10 +222,11 @@ describe('protocol', function() {
         callId = msg[1];
       }
     );
-    var callSpy = chai.spy(function(id, args, kwargs) {
+    var callSpy = chai.spy(function(err, args) {
+      expect(err).to.be.an('error');
       expect(args).to.deep.equal(['err.detail.1','err.detail.2']);
     });
-    realm.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callSpy);
+    api.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callSpy);
     expect(sender.send, 'invocation received').to.have.been.called.once;
 
     cli.handle([WAMP.ERROR, WAMP.INVOCATION, callId, {}, 'wamp.error.runtime_error', ['err.detail.1','err.detail.2']]);
