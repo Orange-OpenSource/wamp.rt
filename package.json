@@ -1,17 +1,18 @@
 {
-  "name": "wamp.rt",
-  "version": "0.1.4",
+  "name": "gyper.wamp",
+  "version": "0.2.0",
   "description": "Basic WebSocket Application Messaging Protocol (WAMP) V2 router library",
   "author": {
-    "name": "David Corvoysier",
-    "email": "david.corvoysier@orange.com"
+    "name": "Anatoly Tsapkov",
+    "email": "anatoly.tsapkov@gmail.com"
   },
   "contributors": [
-    "Dominique ALOË <daloe.ext@orange.com>"
+    "Dominique ALOË <daloe.ext@orange.com>",
+    "David Corvoysier <david.corvoysier@orange.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Orange-OpenSource/wamp.rt.git"
+    "url": "https://github.com/kalmyk/wamp.rt.git"
   },
   "dependencies": {
     "ws": "*",

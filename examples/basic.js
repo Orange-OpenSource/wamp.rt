@@ -19,6 +19,18 @@ program
 
 console.log('Listening port:', program.port);
 
+function onRPCRegistered(realm, uri) {
+    console.log('onRPCRegistered RPC registered', uri);
+}
+
+function onRPCUnregistered(realm, uri) {
+    console.log('onRPCUnregistered RPC unregistered', uri);
+}
+
+function onPublish(realm, topicUri, args) {
+    console.log('onPublish Publish', topicUri, args);
+}
+
 //
 // WebSocket server
 //
@@ -34,6 +46,14 @@ var app = new WampRouter(
       }
     }
 );
+
+app.on('RPCRegistered', onRPCRegistered);
+app.on('RPCUnregistered', onRPCUnregistered);
+app.on('Publish', onPublish);
+
+app.on('RealmCreated', function (realm, realmName) {
+    console.log('new Relm:', realmName);
+});
 
 var api = app.getRealm('realm1').api();
 api.regrpc('wamp.rt.foo', function(id, args, kwargs) {

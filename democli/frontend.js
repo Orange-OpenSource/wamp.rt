@@ -119,8 +119,9 @@ connection.onopen = function (new_session) {
          console.log("published, publication ID is ", publication);
          connection.close();
       },
-      function(error) {      console.log("publication error", error);
-         connection.close();
+      function(error) {
+          console.log("publication error", error);
+          connection.close();
       }
    );
 };
