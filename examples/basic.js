@@ -53,6 +53,13 @@ app.on('Publish', onPublish);
 
 app.on('RealmCreated', function (realm, realmName) {
     console.log('new Relm:', realmName);
+//    realm.isSecured = true;
+    realm.authenticate = function (secureDetails, secret, callback) {
+        if (secureDetails.authid+'-secret' === secret)
+            callback();
+        else
+            callback('authorization_failed');
+    }
 });
 
 var api = app.getRealm('realm1').api();

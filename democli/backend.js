@@ -79,8 +79,6 @@ connection.onopen = function (session) {
    );
 
    setTimeout(function() {console.log("Unregistration");session.unregister(reg);session.unregister(reg2);},20000);
-
-
 };
 
 connection.open();

@@ -30,13 +30,13 @@ describe('protocol', function() {
         expect(msg[0]).to.equal(WAMP.WELCOME);
       }
     );
-    cli.handle([WAMP.HELLO, 1, 'test', {}]);
+    cli.handle([WAMP.HELLO, 'test', {}]);
     expect(sender.send).to.have.been.called.once;
 
-    // second hello to logout
+    // second hello command raises error and disconnects the user
     sender.send = chai.spy(function (msg, id, callback) {});
     sender.close = chai.spy(function (error, reason) {});
-    cli.handle([WAMP.HELLO, 1, 'test', {}]);
+    cli.handle([WAMP.HELLO, 'test', {}]);
     expect(sender.send).to.not.have.been.called;
     expect(sender.close).to.have.been.called.once;
   });
