@@ -1,11 +1,12 @@
 'use strict';
 
 var
-    chai   = require('chai'),
-    spies  = require('chai-spies'),
-    expect = chai.expect,
-    WAMP   = require('../lib/protocol'),
-    Router = require('../lib/router');
+    chai    = require('chai'),
+    spies   = require('chai-spies'),
+    expect  = chai.expect,
+    WAMP    = require('../lib/protocol'),
+    Session = require('../lib/session'),
+    Router  = require('../lib/router');
 
 chai.use(spies);
 
@@ -29,7 +30,8 @@ describe('authenticate', function() {
             }
         });
 
-        cli = router.createSession(sender);
+        cli = new Session(router, sender, router.getNewSessionId());
+        router.registerSession(cli);
     });
 
     afterEach(function(){
@@ -48,7 +50,7 @@ describe('authenticate', function() {
         sender.send = chai.spy(
             function (msg, id, callback) {
                 expect(msg[0]).to.equal(WAMP.ABORT);
-//                callback();  
+//                callback();
             }
         );
         cli.handle([WAMP.AUTHENTICATE, 'incorrect-secret']);
