@@ -5,6 +5,7 @@ var
     spies   = require('chai-spies'),
     expect  = chai.expect,
     WAMP    = require('../lib/protocol'),
+    Realm   = require('../lib/realm'),
     Session = require('../lib/session'),
     Router  = require('../lib/router');
 
@@ -13,55 +14,26 @@ chai.use(spies);
 describe('protocol', function() {
   var
     router,
+    realm,
     sender,
-    cli;
+    cli,
+    api;
 
     beforeEach(function(){
         sender = {};
         router = new Router();
+        realm = new Realm(router);
+        api = realm.api();
         cli = new Session(router, sender, router.getNewSessionId());
         router.registerSession(cli);
+        cli.realm = realm;
     });
 
     afterEach(function(){
     })
 
-    it('HELLO/WELCOME', function () {
-        sender.send = chai.spy(
-            function (msg, id, callback) {
-                expect(msg[0]).to.equal(WAMP.WELCOME);
-            }
-        );
-        cli.handle([WAMP.HELLO, 'test', {}]);
-        expect(sender.send).to.have.been.called.once;
-
-        // second hello command raises error and disconnects the user
-        sender.send = chai.spy(function (msg, id, callback) {});
-        sender.close = chai.spy(function (error, reason) {});
-        cli.handle([WAMP.HELLO, 'test', {}]);
-        expect(sender.send).to.not.have.been.called;
-        expect(sender.close).to.have.been.called.once;
-    });
-
-    it('GOODBYE', function () {
-        sender.send = chai.spy(
-            function (msg, id, callback) {
-                expect(msg[0]).to.equal(WAMP.GOODBYE);
-                callback();
-            }
-        );
-        sender.close = chai.spy(
-            function (error) {}
-        );
-        cli.handle([WAMP.GOODBYE]);
-        expect(sender.send).to.have.been.called.once;
-        expect(sender.close).to.have.been.called.once;
-    });
-
     it('empty cleanup', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
-        cli.realm.cleanup(api);
+        realm.cleanup(api);
     });
 
     it('CALL to RPC not exist', function () {
@@ -73,24 +45,19 @@ describe('protocol', function() {
                 expect(msg[4]).to.equal('wamp.error.no_such_procedure');
             }
         );
-        cli.initRealm('test');
         cli.handle([WAMP.CALL, 1234, {}, 'any.function.name', []]);
         expect(sender.send).to.have.been.called.once;
     });
 
     it('cleanup RPC API', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
         var procSpy = chai.spy(function() {});
         api.regrpc('func1', procSpy)
-        expect(cli.realm.cleanupRPC(api)).to.deep.equal(['func1']);
-        expect(cli.realm.cleanupRPC(api)).to.deep.equal([]);
+        expect(realm.cleanupRPC(api)).to.deep.equal(['func1']);
+        expect(realm.cleanupRPC(api)).to.deep.equal([]);
         expect(procSpy).to.not.have.been.called;
     });
 
     it('CALL to router', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
         var procSpy = chai.spy(function(id, args, kwargs) {
             api.resrpc(id, undefined, [['result.1','result.2'], {kVal:'kRes'}]);
         });
@@ -111,8 +78,6 @@ describe('protocol', function() {
     });
 
     it('CALL to router with error', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
         var callId = null;
         var procSpy = chai.spy(function(id, args, kwargs) {
             callId = id;
@@ -126,7 +91,6 @@ describe('protocol', function() {
                 expect(msg[4]).to.deep.equal('wamp.error.callee_failure');
             }
         );
-        cli.initRealm('test');
         cli.handle([WAMP.CALL, 1234, {}, 'func1', ['arg1', 'arg2'], {'kArg':'kVal'}]);
         api.resrpc(callId, 1, [['result.1','result.2'], {kVal:'kRes'}]);
         expect(procSpy).to.have.been.called.once;
@@ -134,8 +98,6 @@ describe('protocol', function() {
     });
 
     it('UNREGISTER error', function () {
-        cli.initRealm('test');
-
         sender.send = chai.spy(
             function (msg, id, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
@@ -150,7 +112,6 @@ describe('protocol', function() {
     });
 
     it('UNREGISTER', function () {
-        cli.initRealm('test');
         var registrationId = null;
 
         sender.send = chai.spy(
@@ -174,8 +135,6 @@ describe('protocol', function() {
     });
 
     it('CALL to remote', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
         var registrationId = null;
 
         sender.send = chai.spy(
@@ -212,9 +171,6 @@ describe('protocol', function() {
     });
 
     it('CALL to remote error', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
-
         sender.send = function () {};
         cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
 
@@ -236,8 +192,6 @@ describe('protocol', function() {
     });
 
     it('UNSUBSCRIBE error', function () {
-        cli.initRealm('test');
-
         sender.send = chai.spy(
             function (msg, id, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
@@ -252,7 +206,6 @@ describe('protocol', function() {
     });
 
     it('UNSUBSCRIBE', function () {
-        cli.initRealm('test');
         var subscriptionId = null;
 
         sender.send = chai.spy(
@@ -276,8 +229,6 @@ describe('protocol', function() {
     });
 
     it('cleanup Topic API', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
         var subSpy = chai.spy(function () {});
         api.substopic('topic1', subSpy);
         expect(cli.realm.cleanupTopic(api)).to.deep.equal(['topic1']);
@@ -286,8 +237,6 @@ describe('protocol', function() {
     });
 
     it('PUBLISH to remote', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
         var subscriptionId = null;
 
         sender.send = chai.spy(
@@ -315,8 +264,6 @@ describe('protocol', function() {
     });
 
     it('SUBSCRIBE to remote', function () {
-        cli.initRealm('test');
-        var api = cli.realm.api();
         var subSpy = chai.spy(
             function (publicationId, args, kwargs) {
                 expect(args).to.deep.equal(['arg.1','arg.2']);
