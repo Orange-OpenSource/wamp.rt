@@ -57,4 +57,30 @@ describe('protocol', function() {
         expect(sender.send).to.have.been.called.once;
         expect(sender.close).to.have.been.called.once;
     });
+
+    it('CALL to no realm RPC', function () {
+        sender.send = chai.spy(
+            function (msg, id, callback) {
+                expect(msg[0]).to.equal(WAMP.ERROR);
+                expect(msg[1]).to.equal(WAMP.CALL);
+                expect(msg[2]).to.equal(1234);
+                expect(msg[4]).to.equal('wamp.error.not_authorized');
+            }
+        );
+        cli.handle([WAMP.CALL, 1234, {}, 'any.function.name', []]);
+        expect(sender.send).to.have.been.called.once;
+    });
+
+    it('REGISTER to no realm', function () {
+        sender.send = chai.spy(
+            function (msg, id, callback) {
+                expect(msg[0]).to.equal(WAMP.ERROR);
+                expect(msg[1]).to.equal(WAMP.REGISTER);
+                expect(msg[2]).to.equal(1234);
+                expect(msg[4]).to.equal('wamp.error.not_authorized');
+            }
+        );
+        cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
+        expect(sender.send, 'registration failed').to.have.been.called.once;
+    });
 });

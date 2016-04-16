@@ -10,6 +10,15 @@ var
 
 chai.use(spies);
 
+var Auth = function () {
+    this.authenticate = function (realmName, secureDetails, secret, callback) {
+        if (realmName+'-'+secureDetails.authid+'-secret' === secret)
+            callback();
+        else
+            callback('authorization_failed');
+    }
+};
+
 describe('authenticate', function() {
     var
         router,
@@ -20,17 +29,8 @@ describe('authenticate', function() {
         sender = {};
         router = new Router();
 
-        router.on('RealmCreated', function (realm, realmName) {
-            realm.isSecured = true;
-            realm.authenticate = function (secureDetails, secret, callback) {
-                if (secureDetails.authid+'-secret' === secret)
-                    callback();
-                else
-                    callback('authorization_failed');
-            }
-        });
-
         cli = new Session(router, sender, router.getNewSessionId());
+        cli.setAuth(new Auth);
         router.registerSession(cli);
     });
 
@@ -72,7 +72,7 @@ describe('authenticate', function() {
                 expect(msg[0]).to.equal(WAMP.WELCOME);
             }
         );
-        cli.handle([WAMP.AUTHENTICATE, 'joe-secret']);
+        cli.handle([WAMP.AUTHENTICATE, 'test-joe-secret']);
         expect(sender.send).to.have.been.called.once;
     });
 
