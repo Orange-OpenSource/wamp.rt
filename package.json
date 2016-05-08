@@ -28,5 +28,10 @@
   "main": "lib/wamp.rt",
   "engines": {
     "node": ">=0.10.0"
+  },
+  "scripts": {
+    "mocha-node-test": "mocha",
+    "lint": "jshint lib/*.js test/*.js",
+    "test": "npm run-script lint && npm run-script mocha-node-test"
   }
 }

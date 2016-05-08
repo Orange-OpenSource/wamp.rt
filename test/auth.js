@@ -1,3 +1,6 @@
+/*jshint mocha: true */
+/*jshint node: true */
+/*jshint expr: true */
 'use strict';
 
 var
@@ -16,7 +19,7 @@ var Auth = function () {
             callback();
         else
             callback('authorization_failed');
-    }
+    };
 };
 
 describe('authenticate', function() {
@@ -30,12 +33,12 @@ describe('authenticate', function() {
         router = new Router();
 
         cli = new Session(router, sender, router.getNewSessionId());
-        cli.setAuth(new Auth);
+        cli.setAuth(new Auth());
         router.registerSession(cli);
     });
 
     afterEach(function(){
-    })
+    });
 
     it('Joe AUTH:FAIL', function () {
         sender.send = chai.spy(

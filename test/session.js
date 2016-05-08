@@ -1,3 +1,6 @@
+/*jshint mocha: true */
+/*jshint node: true */
+/*jshint expr: true */
 'use strict';
 
 var
@@ -10,11 +13,11 @@ var
 
 chai.use(spies);
 
-describe('protocol', function() {
-  var
-    router,
-    sender,
-    cli;
+describe('session', function() {
+    var
+        router,
+        sender,
+        cli;
 
     beforeEach(function(){
         sender = {};
@@ -24,7 +27,7 @@ describe('protocol', function() {
     });
 
     afterEach(function(){
-    })
+    });
 
     it('HELLO/WELCOME', function () {
         sender.send = chai.spy(

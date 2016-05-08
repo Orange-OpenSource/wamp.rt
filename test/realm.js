@@ -1,3 +1,6 @@
+/*jshint mocha: true */
+/*jshint node: true */
+/*jshint expr: true */
 'use strict';
 
 var
@@ -30,7 +33,7 @@ describe('protocol', function() {
     });
 
     afterEach(function(){
-    })
+    });
 
     it('empty cleanup', function () {
         realm.cleanup(api);
@@ -51,7 +54,7 @@ describe('protocol', function() {
 
     it('cleanup RPC API', function () {
         var procSpy = chai.spy(function() {});
-        api.regrpc('func1', procSpy)
+        api.regrpc('func1', procSpy);
         expect(realm.cleanupRPC(api)).to.deep.equal(['func1']);
         expect(realm.cleanupRPC(api)).to.deep.equal([]);
         expect(procSpy).to.not.have.been.called;
@@ -61,7 +64,7 @@ describe('protocol', function() {
         var procSpy = chai.spy(function(id, args, kwargs) {
             api.resrpc(id, undefined, [['result.1','result.2'], {kVal:'kRes'}]);
         });
-        var regId = api.regrpc('func1', procSpy)
+        var regId = api.regrpc('func1', procSpy);
 
         sender.send = chai.spy(
             function (msg, id, callback) {
