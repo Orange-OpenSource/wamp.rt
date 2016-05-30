@@ -48,9 +48,10 @@ app.on('RealmCreated', function (realm, realmName) {
     console.log('new Relm:', realmName);
 });
 
-var api = app.getRealm('realm1').api();
-api.regrpc('wamp.rt.foo', function(id, args, kwargs) {
-    console.log('called with ', args, kwargs);
-    api.resrpc(id, null /* no error */, [["bar", "bar2"], {"key1": "bar1", "key2": "bar2"}]);
+app.getRealm('realm1', function (realm) {
+    var api = realm.api();
+    api.regrpc('wamp.rt.foo', function(id, args, kwargs) {
+        console.log('called with ', args, kwargs);
+        api.resrpc(id, null /* no error */, [["bar", "bar2"], {"key1": "bar1", "key2": "bar2"}]);
+    });
 });
-

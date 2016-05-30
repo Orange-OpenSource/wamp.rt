@@ -33,7 +33,7 @@ describe('authenticate', function() {
         router = new Router();
 
         cli = new Session(router, sender, router.getNewSessionId());
-        cli.setAuth(new Auth());
+        cli.setAuthHandler(new Auth());
         router.registerSession(cli);
     });
 

@@ -20,7 +20,7 @@ var Auth = function () {
             callback();
         else
             callback('authorization_failed');
-    }
+    };
 };
 
 //
@@ -37,6 +37,5 @@ var app = new WampRouter(
           //cb(false);
       }
     },
-    new Auth
+    new Auth()
 );
-
