@@ -17,3 +17,12 @@ wamp.rt has been inspired by the following Open Source projects:
 
 - [wamp.io](https://github.com/nicokaiser/wamp.io) 
 
+
+## Changes to internal api
+2016-04-03:
+- ticket auth support added
+
+2016-03-09:
+- internal api moved to realm
+- callrpc method has args & kwargs arguments
+- publish method does not require message id

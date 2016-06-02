@@ -3,20 +3,35 @@ var autobahn = require('autobahn');
 var program = require('commander');
 
 program
-    .option('-p, --port <port>', 'Server IP port', parseInt,9000)
+    .option('-p, --port <port>', 'Server IP port', 9000)
     .option('-i, --ip <ip>', 'Server IP address','127.0.0.1')
     .parse(process.argv);
 
+var connectUrl = 'ws://' + program.ip + ':' + program.port;
+console.log('connectUrl:', connectUrl);
+
+var user = "joe";
+var key = "joe-secret";
+
+// this callback is fired during authentication
+function onchallenge (session, method, extra) {
+    if (method === "ticket") {
+        return key;
+    } else {
+        throw "don't know how to authenticate using '" + method + "'";
+    }
+}
+
 var connection = new autobahn.Connection({
-   url: 'ws://' + program.ip + ':' + program.port,
-   realm: 'realm1'}
-);
+    url: connectUrl,
+    realm: 'realm1',
+    authmethods: ["ticket", "wampcra"],
+    authid: user,
+    onchallenge: onchallenge
+});
 
-var session = null;
+connection.onopen = function (session, details) {
 
-connection.onopen = function (new_session) {
-
-   session = new_session;
    session.log("Session open.");
 
    var starttime = Date.now();
@@ -90,7 +105,7 @@ connection.onopen = function (new_session) {
       }
    );
 
-   session.call('wamp.rt.foo',["test"]).then(
+   session.call('wamp.rt.foo', ["test"], {foo:'bar'}).then(
       function (res) {
          session.log("Call wamp.rt.foo completed in " +
             (Date.now() - starttime) +
@@ -116,15 +131,15 @@ connection.onopen = function (new_session) {
          console.log("published, publication ID is ", publication);
          connection.close();
       },
-      function(error) {      console.log("publication error", error);
-         connection.close();
+      function(error) {
+          console.log("publication error", error);
+          connection.close();
       }
    );
 };
 
 connection.onclose = function (reason, details) {
-   console.log("connection 1", reason, details);
+   console.log("close connection:", reason, details);
 };
 
 connection.open();
-
