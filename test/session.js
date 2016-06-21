@@ -31,7 +31,7 @@ describe('session', function() {
 
     it('HELLO/WELCOME', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.WELCOME);
             }
         );
@@ -39,7 +39,7 @@ describe('session', function() {
         expect(sender.send).to.have.been.called.once;
 
         // second hello command raises error and disconnects the user
-        sender.send = chai.spy(function (msg, id, callback) {});
+        sender.send = chai.spy(function (msg, callback) {});
         sender.close = chai.spy(function (error, reason) {});
         cli.handle([WAMP.HELLO, 'test', {}]);
         expect(sender.send).to.not.have.been.called;
@@ -48,7 +48,7 @@ describe('session', function() {
 
     it('GOODBYE', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.GOODBYE);
                 callback();
             }
@@ -63,7 +63,7 @@ describe('session', function() {
 
     it('CALL to no realm RPC', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
                 expect(msg[1]).to.equal(WAMP.CALL);
                 expect(msg[2]).to.equal(1234);
@@ -76,7 +76,7 @@ describe('session', function() {
 
     it('REGISTER to no realm', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
                 expect(msg[1]).to.equal(WAMP.REGISTER);
                 expect(msg[2]).to.equal(1234);

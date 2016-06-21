@@ -42,7 +42,7 @@ describe('authenticate', function() {
 
     it('Joe AUTH:FAIL', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.CHALLENGE);
                 expect(msg[1]).to.equal('ticket');
             }
@@ -51,7 +51,7 @@ describe('authenticate', function() {
         expect(sender.send).to.have.been.called.once;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.ABORT);
 //                callback();
             }
@@ -62,7 +62,7 @@ describe('authenticate', function() {
 
     it('Joe AUTH:OK', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.CHALLENGE);
                 expect(msg[1]).to.equal('ticket');
             }
@@ -71,7 +71,7 @@ describe('authenticate', function() {
         expect(sender.send).to.have.been.called.once;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.WELCOME);
             }
         );
