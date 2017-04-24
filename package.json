@@ -15,11 +15,12 @@
     "url": "https://github.com/kalmyk/wamp.rt.git"
   },
   "dependencies": {
-    "ws": "*",
-    "commander": "*"
+    "ws": "~1",
+    "commander": "*",
+    "node-statsd": "*"
   },
   "devDependencies": {
-    "autobahn": "*",
+    "autobahn": "~0.9.4",
     "when": "*",
     "chai": "*",
     "chai-as-promised": "*",
