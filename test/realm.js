@@ -41,7 +41,7 @@ describe('protocol', function() {
 
     it('CALL to RPC not exist', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
                 expect(msg[1]).to.equal(WAMP.CALL);
                 expect(msg[2]).to.equal(1234);
@@ -67,7 +67,7 @@ describe('protocol', function() {
         var regId = api.regrpc('func1', procSpy);
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.RESULT);
                 expect(msg[1]).to.equal(1234);
                 expect(msg[3]).to.deep.equal(['result.1','result.2']);
@@ -87,7 +87,7 @@ describe('protocol', function() {
         });
         api.regrpc('func1', procSpy);
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
                 expect(msg[1]).to.equal(WAMP.CALL);
                 expect(msg[2]).to.equal(1234);
@@ -102,7 +102,7 @@ describe('protocol', function() {
 
     it('UNREGISTER error', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
                 expect(msg[1]).to.equal(WAMP.UNREGISTER);
                 expect(msg[2]).to.equal(2345);
@@ -118,7 +118,7 @@ describe('protocol', function() {
         var registrationId = null;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.REGISTERED);
                 expect(msg[1]).to.equal(1234);
                 registrationId = msg[2];
@@ -128,7 +128,7 @@ describe('protocol', function() {
         expect(sender.send, 'registration confirmed').to.have.been.called.once;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.UNREGISTERED);
                 expect(msg[1]).to.equal(2345);
             }
@@ -141,7 +141,7 @@ describe('protocol', function() {
         var registrationId = null;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.REGISTERED);
                 expect(msg[1]).to.equal(1234);
                 registrationId = msg[2];
@@ -152,7 +152,7 @@ describe('protocol', function() {
 
         var callId = null;
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.INVOCATION);
                 callId = msg[1];
                 expect(msg[2]).to.equal(registrationId);
@@ -179,7 +179,7 @@ describe('protocol', function() {
 
         var callId = null;
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 callId = msg[1];
             }
         );
@@ -196,7 +196,7 @@ describe('protocol', function() {
 
     it('UNSUBSCRIBE error', function () {
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
                 expect(msg[1]).to.equal(WAMP.UNSUBSCRIBE);
                 expect(msg[2]).to.equal(2345);
@@ -212,7 +212,7 @@ describe('protocol', function() {
         var subscriptionId = null;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.SUBSCRIBED);
                 expect(msg[1]).to.equal(1234);
                 subscriptionId = msg[2];
@@ -222,7 +222,7 @@ describe('protocol', function() {
         expect(sender.send, 'subscription confirmed').to.have.been.called.once;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.UNSUBSCRIBED);
                 expect(msg[1]).to.equal(2345);
             }
@@ -243,7 +243,7 @@ describe('protocol', function() {
         var subscriptionId = null;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.SUBSCRIBED);
                 expect(msg[1]).to.equal(1234);
                 subscriptionId = msg[2];
@@ -253,7 +253,7 @@ describe('protocol', function() {
         expect(sender.send, 'subscription confirmed').to.have.been.called.once;
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.EVENT);
                 expect(msg[1]).to.equal(subscriptionId);
                 // 2 published message Id
@@ -276,7 +276,7 @@ describe('protocol', function() {
         var subId = api.substopic('topic1', subSpy);
 
         sender.send = chai.spy(
-            function (msg, id, callback) {
+            function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.PUBLISHED);
                 expect(msg[1]).to.equal(2345);
             }
