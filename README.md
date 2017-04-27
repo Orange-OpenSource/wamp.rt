@@ -1,11 +1,6 @@
-# wamp.rt: A WAMP V2 nodejs router
-##Copyright Orange 2014, All Rights Reserved
+# FOX.WAMP is a WAMP v2 message router implementation
 
-wamp.rt is a WebSocket Application Messaging Protocol [WAMP](http://wamp.ws/) V2 router implementation based on nodejs.
-
-The router is compliant with the WAMP V2 [Basic Profile](https://github.com/tavendo/WAMP/blob/master/spec/basic.md).
-
-wamp.rt implements both [Dealer](https://github.com/tavendo/WAMP/blob/master/spec/basic.md#peers-and-roles) and [Broker](https://github.com/tavendo/WAMP/blob/master/spec/basic.md#peers-and-roles) roles.
+The message router is compliant with the [WAMP V2 Basic Profile](http://wamp-proto.org/).
 
 ## Build Instructions
 
@@ -13,12 +8,13 @@ Install using npm. Depending on what you want to do, your mileage may vary.
 
 ## Credits
 
-wamp.rt has been inspired by the following Open Source projects:
+fox.wamp has been inspired by the following Open Source projects:
 
 - [wamp.io](https://github.com/nicokaiser/wamp.io) 
+- [wamp.rt](https://github.com/Orange-OpenSource/wamp.rt) 
 
 
-## Changes to internal api
+## Changes:
 2016-04-03:
 - ticket auth support added
 
@@ -26,3 +22,6 @@ wamp.rt has been inspired by the following Open Source projects:
 - internal api moved to realm
 - callrpc method has args & kwargs arguments
 - publish method does not require message id
+
+2017-04-26:
+- integration with [StatsD](https://github.com/etsy/statsd)
