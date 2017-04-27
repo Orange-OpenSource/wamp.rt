@@ -58,7 +58,8 @@ connection.onopen = function (session) {
    function onEvent(publishArgs, kwargs) {
       console.log('Event', currentSubscription.topic,'received args', publishArgs, 'kwargs ',kwargs);
       counter++;
-      if (counter > 20) {
+
+      if (counter >= 20) {
          session.unsubscribe(currentSubscription).then(function(gone) {
          console.log("unsubscribe successfull");
          }, function(error) {
@@ -78,7 +79,13 @@ connection.onopen = function (session) {
       }
    );
 
-   setTimeout(function() {console.log("Unregistration");session.unregister(reg);session.unregister(reg2);},20000);
+  setTimeout(function() {
+      console.log("Unregistration");
+      session.unregister(reg);
+      session.unregister(reg2);
+    },
+    20000
+  );
 };
 
 connection.open();

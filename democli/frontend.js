@@ -105,12 +105,11 @@ connection.onopen = function (session, details) {
       }
    );
 
-   session.call('wamp.rt.foo', ["test"], {foo:'bar'}).then(
+   session.call('test.foo', ["test"], {foo:'bar'}).then(
       function (res) {
-         session.log("Call wamp.rt.foo completed in " +
+         session.log("Call test.foo completed in " +
             (Date.now() - starttime) +
             " ms: result =", res);
-
       },
       function (error) {
          console.log("Call failed:", error);
