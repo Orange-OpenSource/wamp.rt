@@ -10,6 +10,7 @@
 
 WAMPRT_TRACE = true;
 
+var MSG = require('../lib/messages');
 var WampRouter = require('../lib/wamp.rt');
 var program = require('commander');
 
@@ -44,7 +45,7 @@ app.on('RPCUnregistered', function (realm, uri) {
 app.on('Publish', function onPublish(realm, topicUri, args) {
     console.log('onPublish Publish', topicUri, args);
 });
-app.on('RealmCreated', function (realm, realmName) {
+app.on(MSG.REALM_CREATED, function (realm, realmName) {
     console.log('new Relm:', realmName);
 });
 
@@ -52,6 +53,6 @@ app.getRealm('realm1', function (realm) {
     var api = realm.api();
     api.regrpc('test.foo', function(id, args, kwargs) {
         console.log('called with ', args, kwargs);
-        api.resrpc(id, null /* no error */, [["bar", "bar2"], {"key1": "bar1", "key2": "bar2"}]);
+        api.resrpc(id, null /* no error */, ["bar", "bar2"], {"key1": "bar1", "key2": "bar2"});
     });
 });

@@ -46,6 +46,7 @@ describe('protocol', function() {
                 expect(msg[1]).to.equal(WAMP.CALL);
                 expect(msg[2]).to.equal(1234);
                 expect(msg[4]).to.equal('wamp.error.no_such_procedure');
+                expect(msg[5]).to.deep.equal([ 'no callee registered for procedure <any.function.name>' ]);
             }
         );
         cli.handle([WAMP.CALL, 1234, {}, 'any.function.name', []]);
@@ -62,7 +63,7 @@ describe('protocol', function() {
 
     it('CALL to router', function () {
         var procSpy = chai.spy(function(id, args, kwargs) {
-            api.resrpc(id, undefined, [['result.1','result.2'], {kVal:'kRes'}]);
+            api.resrpc(id, undefined, ['result.1','result.2'], {kVal:'kRes'});
         });
         var regId = api.regrpc('func1', procSpy);
 
@@ -95,7 +96,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.CALL, 1234, {}, 'func1', ['arg1', 'arg2'], {'kArg':'kVal'}]);
-        api.resrpc(callId, 1, [['result.1','result.2'], {kVal:'kRes'}]);
+        api.resrpc(callId, 1, ['result.1','result.2'], {kVal:'kRes'});
         expect(procSpy).to.have.been.called.once;
         expect(sender.send).to.have.been.called.once;
     });
@@ -161,19 +162,21 @@ describe('protocol', function() {
                 expect(msg[5]).to.deep.equal({kVal:'kRes'});
             }
         );
-        var callSpy = chai.spy(function(err, args) {
+        var callResponse = chai.spy(function(err, args, kwargs) {
             expect(err).to.equal(null);
-            expect(args).to.deep.equal([['result.1','result.2'],{foo:'bar'}]);
+            expect(args).to.deep.equal(['result.1','result.2'], 'args call spy response');
+            expect(kwargs).to.deep.equal({foo:'bar'}, 'kwargs call spy response');
         });
-        api.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callSpy);
+        api.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callResponse);
         expect(sender.send, 'invocation received').to.have.been.called.once;
 
+        // return the function result
         cli.handle([WAMP.YIELD, callId, {}, ['result.1','result.2'], {foo:'bar'}]);
 
-        expect(callSpy, 'result delivered').to.have.been.called.once;
+        expect(callResponse, 'result delivered').to.have.been.called.once;
     });
 
-    it('CALL to remote error', function () {
+    it('CALL error to remote', function () {
         sender.send = function () {};
         cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
 
