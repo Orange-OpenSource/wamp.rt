@@ -48,7 +48,7 @@ describe('authenticate', function() {
             }
         );
         cli.handle([WAMP.HELLO, 'test', {authid: 'joe', authmethods:['ticket']}]);
-        expect(sender.send).to.have.been.called.once;
+        expect(sender.send).to.have.been.called.once();
 
         sender.send = chai.spy(
             function (msg, callback) {
@@ -57,7 +57,7 @@ describe('authenticate', function() {
             }
         );
         cli.handle([WAMP.AUTHENTICATE, 'incorrect-secret']);
-        expect(sender.send).to.have.been.called.once;
+        expect(sender.send).to.have.been.called.once();
     });
 
     it('Joe AUTH:OK', function () {
@@ -68,7 +68,7 @@ describe('authenticate', function() {
             }
         );
         cli.handle([WAMP.HELLO, 'test', {authid: 'joe', authmethods:['ticket']}]);
-        expect(sender.send).to.have.been.called.once;
+        expect(sender.send).to.have.been.called.once();
 
         sender.send = chai.spy(
             function (msg, callback) {
@@ -76,7 +76,7 @@ describe('authenticate', function() {
             }
         );
         cli.handle([WAMP.AUTHENTICATE, 'test-joe-secret']);
-        expect(sender.send).to.have.been.called.once;
+        expect(sender.send).to.have.been.called.once();
     });
 
 });

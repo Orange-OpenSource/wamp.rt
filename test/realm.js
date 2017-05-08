@@ -50,7 +50,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.CALL, 1234, {}, 'any.function.name', []]);
-        expect(sender.send).to.have.been.called.once;
+        expect(sender.send).to.have.been.called.once();
     });
 
     it('cleanup RPC API', function () {
@@ -58,7 +58,7 @@ describe('protocol', function() {
         api.regrpc('func1', procSpy);
         expect(realm.cleanupRPC(api)).to.deep.equal(['func1']);
         expect(realm.cleanupRPC(api)).to.deep.equal([]);
-        expect(procSpy).to.not.have.been.called;
+        expect(procSpy).to.not.have.been.called();
     });
 
     it('CALL to router', function () {
@@ -76,8 +76,8 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.CALL, 1234, {}, 'func1', ['arg1', 'arg2'], {'kArg':'kVal'}]);
-        expect(procSpy, 'RPC delivered').to.have.been.called.once;
-        expect(sender.send, 'result delivered').to.have.been.called.once;
+        expect(procSpy, 'RPC delivered').to.have.been.called.once();
+        expect(sender.send, 'result delivered').to.have.been.called.once();
         expect(api.unregrpc(regId)).to.equal('func1');
     });
 
@@ -97,8 +97,8 @@ describe('protocol', function() {
         );
         cli.handle([WAMP.CALL, 1234, {}, 'func1', ['arg1', 'arg2'], {'kArg':'kVal'}]);
         api.resrpc(callId, 1, ['result.1','result.2'], {kVal:'kRes'});
-        expect(procSpy).to.have.been.called.once;
-        expect(sender.send).to.have.been.called.once;
+        expect(procSpy).to.have.been.called.once();
+        expect(sender.send).to.have.been.called.once();
     });
 
     it('UNREGISTER error', function () {
@@ -112,7 +112,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.UNREGISTER, 2345, 1234567890]);
-        expect(sender.send, 'unregistration confirmed').to.have.been.called.once;
+        expect(sender.send, 'unregistration confirmed').to.have.been.called.once();
     });
 
     it('UNREGISTER', function () {
@@ -126,7 +126,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
-        expect(sender.send, 'registration confirmed').to.have.been.called.once;
+        expect(sender.send, 'registration confirmed').to.have.been.called.once();
 
         sender.send = chai.spy(
             function (msg, callback) {
@@ -135,7 +135,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.UNREGISTER, 2345, registrationId]);
-        expect(sender.send, 'unregistration confirmed').to.have.been.called.once;
+        expect(sender.send, 'unregistration confirmed').to.have.been.called.once();
     });
 
     it('CALL to remote', function () {
@@ -149,7 +149,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
-        expect(sender.send, 'registration confirmed').to.have.been.called.once;
+        expect(sender.send, 'registration confirmed').to.have.been.called.once();
 
         var callId = null;
         sender.send = chai.spy(
@@ -168,12 +168,12 @@ describe('protocol', function() {
             expect(kwargs).to.deep.equal({foo:'bar'}, 'kwargs call spy response');
         });
         api.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callResponse);
-        expect(sender.send, 'invocation received').to.have.been.called.once;
+        expect(sender.send, 'invocation received').to.have.been.called.once();
 
         // return the function result
         cli.handle([WAMP.YIELD, callId, {}, ['result.1','result.2'], {foo:'bar'}]);
 
-        expect(callResponse, 'result delivered').to.have.been.called.once;
+        expect(callResponse, 'result delivered').to.have.been.called.once();
     });
 
     it('CALL error to remote', function () {
@@ -191,13 +191,13 @@ describe('protocol', function() {
             expect(args).to.deep.equal(['err.detail.1','err.detail.2']);
         });
         api.callrpc('func1', ['arg.1','arg.2'], {kVal:'kRes'}, callSpy);
-        expect(sender.send, 'invocation received').to.have.been.called.once;
+        expect(sender.send, 'invocation received').to.have.been.called.once();
 
         cli.handle([WAMP.ERROR, WAMP.INVOCATION, callId, {}, 'wamp.error.runtime_error', ['err.detail.1','err.detail.2']]);
-        expect(callSpy, 'error delivered').to.have.been.called.once;
+        expect(callSpy, 'error delivered').to.have.been.called.once();
     });
 
-    it('UNSUBSCRIBE error', function () {
+    it('UNSUBSCRIBE-ERROR', function () {
         sender.send = chai.spy(
             function (msg, callback) {
                 expect(msg[0]).to.equal(WAMP.ERROR);
@@ -208,10 +208,10 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.UNSUBSCRIBE, 2345, 1234567890]);
-        expect(sender.send, 'unsubscription confirmed').to.have.been.called.once;
+        expect(sender.send, 'unsubscription confirmed').to.have.been.called.once();
     });
 
-    it('UNSUBSCRIBE', function () {
+    it('UNSUBSCRIBE-OK', function () {
         var subscriptionId = null;
 
         sender.send = chai.spy(
@@ -222,7 +222,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.SUBSCRIBE, 1234, {}, 'topic1']);
-        expect(sender.send, 'subscription confirmed').to.have.been.called.once;
+        expect(sender.send, 'subscription confirmed').to.have.been.called.once();
 
         sender.send = chai.spy(
             function (msg, callback) {
@@ -231,7 +231,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.UNSUBSCRIBE, 2345, subscriptionId]);
-        expect(sender.send, 'unsubscription confirmed').to.have.been.called.once;
+        expect(sender.send, 'unsubscription confirmed').to.have.been.called.once();
     });
 
     it('cleanup Topic API', function () {
@@ -239,7 +239,21 @@ describe('protocol', function() {
         api.substopic('topic1', subSpy);
         expect(cli.realm.cleanupTopic(api)).to.deep.equal(['topic1']);
         expect(cli.realm.cleanupTopic(api)).to.deep.equal([]);
-        expect(subSpy).to.not.have.been.called;
+        expect(subSpy).to.not.have.been.called();
+    });
+
+    it('PUBLISH default exclude_me:true', function () {
+      var subSpy = chai.spy(function () {});
+      api.substopic('topic1', subSpy);
+      api.publish('topic1', [], {});
+      expect(subSpy).to.not.have.been.called();
+    });
+
+    it('PUBLISH exclude_me:false', function () {
+      var subSpy = chai.spy(function () {});
+      api.substopic('topic1', subSpy);
+      api.publish('topic1', [], {}, {exclude_me:false});
+      expect(subSpy).to.have.been.called.once();
     });
 
     it('PUBLISH to remote', function () {
@@ -253,7 +267,7 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.SUBSCRIBE, 1234, {}, 'topic1']);
-        expect(sender.send, 'subscription confirmed').to.have.been.called.once;
+        expect(sender.send, 'subscription confirmed').to.have.been.called.once();
 
         sender.send = chai.spy(
             function (msg, callback) {
@@ -266,7 +280,7 @@ describe('protocol', function() {
             }
         );
         api.publish('topic1', ['arg.1','arg.2'], {foo:'bar'});
-        expect(sender.send, 'publication received').to.have.been.called.once;
+        expect(sender.send, 'publication received').to.have.been.called.once();
     });
 
     it('SUBSCRIBE to remote', function () {
@@ -285,11 +299,11 @@ describe('protocol', function() {
             }
         );
         cli.handle([WAMP.PUBLISH, 1234, {}, "topic1", ['arg.1','arg.2'],{foo:'bar'}]);
-        expect(sender.send, 'published').to.not.have.been.called;
+        expect(sender.send, 'published').to.not.have.been.called();
         cli.handle([WAMP.PUBLISH, 2345, {"acknowledge":true}, "topic1", ['arg.1','arg.2'],{foo:'bar'}]);
-        expect(sender.send, 'published').to.have.been.called.once;
+        expect(sender.send, 'published').to.have.been.called.once();
 
-        expect(subSpy, 'publication done').to.have.been.called.twice;
+        expect(subSpy, 'publication done').to.have.been.called.twice();
         expect(api.unsubstopic(subId)).to.equal('topic1');
     });
 });

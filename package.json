@@ -1,5 +1,5 @@
 {
-  "name": "gyper.wamp",
+  "name": "fox.wamp",
   "version": "0.2.0",
   "description": "Basic WebSocket Application Messaging Protocol (WAMP) V2 router library",
   "author": {
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kalmyk/wamp.rt.git"
+    "url": "https://github.com/kalmyk/fox.wamp.git"
   },
   "dependencies": {
     "ws": "~1",
