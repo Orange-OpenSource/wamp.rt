@@ -20,13 +20,31 @@ connection.onopen = function (session) {
    var reg = null;
    var reg2 = null;
 
-   function utcnow() {
-      console.log("Someone is calling me;)");
-      now = new Date();
-      return now.toISOString();
+   function utcprogress(args, kwargs, options) {
+      console.log("Someone is calling utc function", args, kwargs, options);
+      if (options.progress) {
+          setTimeout(function () {
+              var now = new Date();
+              options.progress(now.toISOString());
+          }, 100);
+          setTimeout(function () {
+              var now = new Date();
+              options.progress(now.toISOString());
+          }, 200);
+          return new Promise((resolve, reject) => {
+              setTimeout(function () {
+                  var now = new Date();
+                  resolve(now.toISOString());
+              }, 300);
+          });
+      }
+      else {
+          var now = new Date();
+          return now.toISOString();
+      }
    }
 
-   session.register('com.timeservice.now', utcnow).then(
+   session.register('com.timeservice.now', utcprogress).then(
       function (registration) {
          console.log("Procedure registered:", registration.id);
          reg = registration;

@@ -157,7 +157,7 @@ describe('protocol', function() {
                 expect(msg[0]).to.equal(WAMP.INVOCATION);
                 callId = msg[1];
                 expect(msg[2]).to.equal(registrationId);
-                // 3 options?
+                expect(msg[3]).to.deep.equal({});  // options
                 expect(msg[4]).to.deep.equal(['arg.1','arg.2']);
                 expect(msg[5]).to.deep.equal({kVal:'kRes'});
             }
@@ -195,6 +195,46 @@ describe('protocol', function() {
 
         cli.handle([WAMP.ERROR, WAMP.INVOCATION, callId, {}, 'wamp.error.runtime_error', ['err.detail.1','err.detail.2']]);
         expect(callSpy, 'error delivered').to.have.been.called.once();
+    });
+
+    it('Progress remote CALL', function () {
+        sender.send = function (msg, callback) {};
+        cli.handle([WAMP.REGISTER, 1234, {}, 'func1']);
+
+        var callId = null;
+        sender.send = chai.spy(
+            function (msg, callback) {
+                expect(msg[0]).to.equal(WAMP.INVOCATION);
+                callId = msg[1];
+                // registrationId
+                expect(msg[3]).to.deep.equal({receive_progress:true});
+            }
+        );
+        var result;
+        var options;
+        var callResponse = chai.spy(function(err, args, kwargs, options) {
+            expect(err).to.equal(null);
+            expect(args).to.deep.equal(result, 'args call spy response');
+            expect(options).to.deep.equal(options, 'progress 1');
+        });
+        api.callrpc('func1', [], {}, callResponse, {receive_progress:1});
+        expect(sender.send, 'invocation received').to.have.been.called.once();
+
+        result = ['result.1'];
+        options = {progress:true};
+        cli.handle([WAMP.YIELD, callId, {progress:true}, ['result.1']]);
+
+        result = ['result.2'];
+        options = {progress:true};
+        cli.handle([WAMP.YIELD, callId, {progress:true}, ['result.2']]);
+
+        result = ['result.3.final'];
+        options = {};
+        cli.handle([WAMP.YIELD, callId, {}, ['result.3.final']]);
+
+        cli.handle([WAMP.YIELD, callId, {}, ['result.not_delivered']]);
+
+        expect(callResponse, 'result delivered').to.have.been.called.exactly(3);
     });
 
     it('UNSUBSCRIBE-ERROR', function () {

@@ -17,6 +17,7 @@ fox.wamp has been inspired by the following Open Source projects:
 ## Changes:
 2017-05-17:
 - Concrete topic published to
+- Progressive Calls (receive_progress & progress)
 
 2017-05-07:
 - exclude_me option of publish

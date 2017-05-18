@@ -7,7 +7,7 @@ program
     .option('-i, --ip <ip>', 'Server IP address','127.0.0.1')
     .parse(process.argv);
 
-var connectUrl = 'ws://' + program.ip + ':' + program.port;
+var connectUrl = 'ws://' + program.ip + ':' + program.port + '/ws';
 console.log('connectUrl:', connectUrl);
 
 var user = "joe";
@@ -25,7 +25,7 @@ function onchallenge (session, method, extra) {
 var connection = new autobahn.Connection({
     url: connectUrl,
     realm: 'realm1',
-    authmethods: ["ticket", "wampcra"],
+//    authmethods: ["ticket", "wampcra"],
     authid: user,
     onchallenge: onchallenge
 });
@@ -35,7 +35,7 @@ connection.onopen = function (session, details) {
    session.log("Session open.");
 
    var starttime = Date.now();
-   session.call('com.timeservice.now').then(
+   var c1 = session.call('com.timeservice.now', [], {}, {receive_progress:true}).then(
       function (now) {
          // this method returns a plain value
          session.log("Call com.timeservice.now completed in " +
@@ -43,8 +43,12 @@ connection.onopen = function (session, details) {
                      " ms: result =", now);
       },
       function (error) {
-         console.log("Call failed:", error);
-      });
+          console.log("Call failed:", error);
+      },
+      function (progress) {
+          console.log("Call progress:", progress);
+      }
+    );
 
    session.call('com.echoservice.echo').then(
       function (res) {
@@ -125,16 +129,19 @@ connection.onopen = function (session, details) {
    session.publish('com.myapp.topic1', ["Arg1", "Arg2" ], { "kwarg1": "kwarg1", "kwarg2": "kwarg2"}, { acknowledge : false });
 
 
-   session.publish('com.myapp.topic1', [ "Arg_1", "Arg_2" ], {}, { acknowledge : true }).then(
+   var p1 = session.publish('com.myapp.topic1', [ "Arg_1", "Arg_2" ], {}, { acknowledge : true }).then(
       function(publication) {
          console.log("published, publication ID is ", publication);
-         connection.close();
       },
       function(error) {
           console.log("publication error", error);
-          connection.close();
+          return Promise.resolve(true);
       }
    );
+
+   Promise.all([c1,p1]).then(function () {
+      connection.close();
+   });
 };
 
 connection.onclose = function (reason, details) {
