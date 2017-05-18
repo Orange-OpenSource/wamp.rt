@@ -274,7 +274,7 @@ describe('protocol', function() {
                 expect(msg[0]).to.equal(WAMP.EVENT);
                 expect(msg[1]).to.equal(subscriptionId);
                 // 2 published message Id
-                // 3 options?
+                expect(msg[3]).to.deep.equal({topic:'topic1'});
                 expect(msg[4]).to.deep.equal(['arg.1','arg.2']);
                 expect(msg[5]).to.deep.equal({foo:'bar'});
             }

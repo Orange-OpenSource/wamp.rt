@@ -51,28 +51,33 @@ connection.onopen = function (session) {
       }
    );
 
-   var currentSubscription = null;
-   var counter = 0;
-
     // Define an event handler
-   function onEvent(publishArgs, kwargs) {
-      console.log('Event', currentSubscription.topic,'received args', publishArgs, 'kwargs ',kwargs);
-      counter++;
-
-      if (counter >= 20) {
-         session.unsubscribe(currentSubscription).then(function(gone) {
-         console.log("unsubscribe successfull");
-         }, function(error) {
-            console.log("unsubscribe failed", error);
-         });
-      }
+   function onEvent(publishArgs, kwargs, opts) {
+      console.log('Event', opts.topic, 'received args', publishArgs, 'kwargs ',kwargs);
    }
 
    // Subscribe to a topic
    session.subscribe('com.myapp.topic1', onEvent).then(
       function(subscription) {
          console.log("subscription successfull", subscription);
-         currentSubscription = subscription;
+      },
+      function(error) {
+         console.log("subscription failed", error);
+      }
+   );
+
+   session.subscribe('wamp.session.on_join', onEvent).then(
+      function(subscription) {
+         console.log("subscription successfull", subscription);
+      },
+      function(error) {
+         console.log("subscription failed", error);
+      }
+   );
+
+   session.subscribe('wamp.session.on_leave', onEvent).then(
+      function(subscription) {
+         console.log("subscription successfull", subscription);
       },
       function(error) {
          console.log("subscription failed", error);
